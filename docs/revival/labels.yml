@@ -1,0 +1,74 @@
+# PowerShellOrg module-revival label manifest
+# Destination: PowerShellOrg/.github (pending write access — see wayfinder T1)
+#
+# Convention: colon-space, lowercase. No emoji. No "/", "&", or apostrophes in names —
+# they break label-sync tooling (vscode-powershell carries both "Area-Build & Release"
+# and "Area-Build  Release" from exactly this).
+#
+# One colour per facet. Only priority gets a gradient, and it lives in an Issue Field,
+# not here.
+#
+# NOT in this file, deliberately:
+#   type:     -> native org Issue Types (Task / Bug / Feature) — already enabled
+#   priority: -> org Issue Field "Priority" — Urgent / High / Medium / Low
+#   effort:   -> dropped. Every human-estimated effort facet measured is dead or dying
+#   skill:    -> dropped. Zero of 15 large repos surveyed track it
+
+# ---------------------------------------------------------------------------
+# Discovery — EXACT strings GitHub indexes. Do not prefix, TitleCase, or emoji these.
+# "good first issue" populates the repo Contribute page and feeds GitHub's
+# approachability algorithm. Getting these wrong makes a revival invisible to the
+# contributor funnel it exists to attract.
+# ---------------------------------------------------------------------------
+- name: "good first issue"
+  color: "7057ff"
+  description: "Newcomer-ready: solution explained, code identified, ready to test"
+- name: "help wanted"
+  color: "008672"
+  description: "Maintainer welcomes a PR on this"
+
+# ---------------------------------------------------------------------------
+# area: — what part of the project. Multi-valued. The four below are universal;
+# the Steward adds module-specific ones (see the recipe in the playbook).
+# ---------------------------------------------------------------------------
+- name: "area: build"
+  color: "0052cc"
+  description: "CI, psake, packaging, release pipeline"
+- name: "area: tests"
+  color: "0052cc"
+  description: "Pester tests and test infrastructure"
+- name: "area: docs"
+  color: "0052cc"
+  description: "README, help text, examples, CONTRIBUTING"
+- name: "area: triage"
+  color: "0052cc"
+  description: "Issue and PR triage, backlog cleanup"
+
+# ---------------------------------------------------------------------------
+# status: — transient lifecycle state, often written by bots. Not a taxonomy.
+# ---------------------------------------------------------------------------
+- name: "status: needs-repro"
+  color: "bfc7d1"
+  description: "Awaiting reproduction steps or clarification from the reporter"
+- name: "status: stale"
+  color: "bfc7d1"
+  description: "No recent activity; candidate for closing"
+
+# ---------------------------------------------------------------------------
+# PRUNE — delete these on transfer. Each is superseded, not merely unfashionable.
+#   bug, enhancement       -> native Issue Types (Bug, Feature)
+#   documentation          -> area: docs
+#   duplicate              -> native close reason "Duplicate"
+#   wontfix, invalid       -> native close reason "Not planned"
+#   question               -> GitHub Discussions (the playbook already routes these there)
+# Prune only after checking usage; a label with real history may be worth migrating
+# rather than deleting.
+# ---------------------------------------------------------------------------
+prune:
+  - "bug"
+  - "enhancement"
+  - "documentation"
+  - "duplicate"
+  - "wontfix"
+  - "invalid"
+  - "question"
