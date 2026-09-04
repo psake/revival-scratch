@@ -31,8 +31,9 @@ async function baseline(github, fullName) {
   let r;
   try { r = (await github.rest.repos.get({ owner, repo })).data; }
   catch (e) { if (e.status === 404) return { ...blank, repo_url: `https://github.com/${fullName}`, note: 'repo not found; fill baseline by hand' }; throw e; }
-  const q = kind => github.rest.search.issuesAndPullRequests({ q: `repo:${fullName} is:${kind} is:open`, per_page: 1 }).then(x => x.data.total_count);
-  const [open_issues, open_prs] = await Promise.all([q('issue'), q('pr')]);
+  // open_issues_count includes PRs; subtract an exact PR count. No search API: it lags and misfired under GITHUB_TOKEN.
+  const open_prs = (await github.paginate(github.rest.pulls.list, { owner, repo, state: 'open', per_page: 100 })).length;
+  const open_issues = r.open_issues_count - open_prs;
   const ci = [];
   for (const [p, name] of [['.github/workflows', 'GitHub Actions'], ['appveyor.yml', 'AppVeyor'], ['azure-pipelines.yml', 'Azure Pipelines'], ['.travis.yml', 'Travis']]) {
     try { await github.rest.repos.getContent({ owner, repo, path: p }); ci.push(name); } catch (e) { if (e.status !== 404) throw e; }
