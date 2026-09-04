@@ -1,0 +1,38 @@
+name: Start a module revival
+
+on:
+  workflow_dispatch:
+    inputs:
+      module:
+        description: "Module name (e.g. BuildHelpers). Used in titles and, by default, as the repo name."
+        required: true
+      steward:
+        description: "GitHub login of the Steward (assigned to every issue)"
+        required: false
+      repo:
+        description: "Repo to pull baseline metrics from, if not PowerShellOrg/<module>"
+        required: false
+      adoption_issue:
+        description: "Adoption request issue number to comment on, if any"
+        required: false
+
+permissions:
+  issues: write
+  contents: read
+
+concurrency:
+  group: revival-${{ inputs.module }}
+  cancel-in-progress: false
+
+jobs:
+  create:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/github-script@v8
+        env:
+          INPUTS: ${{ toJSON(inputs) }}
+        with:
+          script: |
+            const run = require('./scripts/create-revival.js');
+            await run({ github, context, core, inputs: JSON.parse(process.env.INPUTS) });
